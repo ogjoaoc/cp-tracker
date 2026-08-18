@@ -1,0 +1,46 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Problem {
+  id                 String          @id @default(cuid())
+  title              String
+  url                String
+  platform           String          // "Codeforces", "LeetCode", etc.
+  platformProblemId  String
+  platformDifficulty String?
+  normalizedDiff     Int             @default(5)
+  simplifiedStatement String
+  reviewTakeaways    String?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  tags               Tag[]
+  attempts           ThoughtAttempt[]
+}
+
+model Tag {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  category String?   // "Data Structure", "Math", "Heuristic"
+  problems Problem[]
+}
+
+model ThoughtAttempt {
+  id             String    @id @default(cuid())
+  problemId      String
+  problem        Problem   @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  title          String    // Ex: "Characterize Sprague-Grundy values"
+  status         String    // "AC", "WA", "TLE", "ABANDONED"
+  keyQuestions   String?   // Markdown + LaTeX
+  keyObservation String?   // Markdown + LaTeX
+  proofSketch    String?   // Markdown + LaTeX
+  heuristicsUsed String?   // Ex: "Examine Examples, Write It Out"
+  notes          String?
+  createdAt      DateTime  @default(now())
+}
