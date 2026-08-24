@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-export function middleware(request: NextRequest) {
+export default function middleware(request: NextRequest) {
   const username = process.env.ADMIN_USER;
   const password = process.env.ADMIN_PASSWORD;
 
   if (!username || !password) {
-    return new NextResponse('Proteção não configurada.', { status: 503 });
+    return new NextResponse('Proteção não configurada.', {
+      status: 503,
+      headers: { 'x-cp-tracker-auth': 'missing-environment' },
+    });
   }
 
   const authorization = request.headers.get('authorization');
@@ -16,6 +19,8 @@ export function middleware(request: NextRequest) {
       status: 401,
       headers: {
         'WWW-Authenticate': 'Basic realm="CP Tracker", charset="UTF-8"',
+        'Cache-Control': 'no-store',
+        'x-cp-tracker-auth': 'required',
       },
     });
   }
@@ -24,5 +29,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!_next|favicon.ico).*)'],
 };
