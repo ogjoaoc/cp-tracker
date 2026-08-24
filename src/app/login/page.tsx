@@ -40,7 +40,7 @@ export default function LoginPage() {
         <div className="mb-7">
           <p className="text-sm font-semibold uppercase tracking-[0.14em] text-blue-600">CP Tracker</p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">Entrar</h1>
-          <p className="mt-2 text-sm text-slate-500">Acesse seu catálogo de problemas e ideias.</p>
+          <p className="mt-2 text-sm text-slate-500">Senha só pra evitar random.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
