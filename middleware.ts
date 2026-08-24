@@ -1,28 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { COOKIE_NAME, isValidSession } from '@/lib/auth';
 
-export default function middleware(request: NextRequest) {
+export default async function middleware(request: NextRequest) {
   const username = process.env.ADMIN_USER;
   const password = process.env.ADMIN_PASSWORD;
+  const pathname = request.nextUrl.pathname;
 
-  if (!username || !password) {
-    return new NextResponse('Proteção não configurada.', {
-      status: 503,
-      headers: { 'x-cp-tracker-auth': 'missing-environment' },
-    });
+  if (pathname === '/login' || pathname === '/api/auth/login' || pathname === '/api/auth/logout') {
+    return NextResponse.next();
   }
 
-  const authorization = request.headers.get('authorization');
-  const expected = `Basic ${btoa(`${username}:${password}`)}`;
+  if (!username || !password) {
+    return new NextResponse('Autenticação não configurada.', { status: 503 });
+  }
 
-  if (authorization !== expected) {
-    return new NextResponse('Autenticação necessária.', {
-      status: 401,
-      headers: {
-        'WWW-Authenticate': 'Basic realm="CP Tracker", charset="UTF-8"',
-        'Cache-Control': 'no-store',
-        'x-cp-tracker-auth': 'required',
-      },
-    });
+  const sessionToken = request.cookies.get(COOKIE_NAME)?.value;
+  const authenticated = await isValidSession(sessionToken, username, password);
+
+  if (!authenticated) {
+    if (pathname.startsWith('/api/')) {
+      return NextResponse.json({ error: 'Não autenticado.' }, { status: 401 });
+    }
+
+    const loginUrl = new URL('/login', request.url);
+    loginUrl.searchParams.set('next', pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { DeleteProblemButton } from '@/components/DeleteProblemButton';
+import { LogoutButton } from '@/components/LogoutButton';
 
 export default function DashboardPage() {
   const [problems, setProblems] = useState<any[]>([]);
@@ -63,6 +64,7 @@ export default function DashboardPage() {
           </div>
 
           <div className="flex flex-wrap gap-3">
+            <LogoutButton />
             <Link href="/problems/new" className="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800">
               + Adicionar problema
             </Link>
