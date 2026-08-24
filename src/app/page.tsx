@@ -58,7 +58,7 @@ export default function DashboardPage() {
       <div className="rounded-2xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur-sm">
         <div className="mb-5 flex flex-col gap-4 border-b border-slate-200 pb-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h1 className="text-4xl font-black tracking-tight text-slate-900">Painel Admin</h1>
+            <h1 className="text-4xl font-black tracking-tight text-slate-900">Manager</h1>
             <p className="mt-1 text-sm text-slate-500">Gerenciamento e documentação de problemas e ideias de programação competitiva</p>
           </div>
 
